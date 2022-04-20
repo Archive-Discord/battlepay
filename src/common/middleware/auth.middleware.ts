@@ -22,11 +22,9 @@ export class AuthMiddleware implements NestMiddleware {
 
                 const User: UserTypes = await this.UserModel.findOne({ id: payload.id }) as unknown as UserTypes;
                 if(!User) throw new HttpException('회원가입 후 이용해주세요', 401)
-                console.log(User)
                 req.user = User;
                 next();
             } catch(e) {
-                console.log(e)
                 if(e.message === "invalid signature") {
                     throw new HttpException('유효하지 않은 토큰입니다', 401);
                 } else {
