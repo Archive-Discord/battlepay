@@ -19,6 +19,6 @@ export class cardInformationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
       consumer
         .apply(AuthMiddleware)
-        .forRoutes('cardlist');
+        .forRoutes('cardlist', 'auth');
   }
 }

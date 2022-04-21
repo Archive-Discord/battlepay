@@ -14,14 +14,14 @@ export class cardInformationService {
     @InjectModel(userData.name) private readonly UserModel: Model<userData>,
     @InjectModel(userPayData.name) private readonly UserPayModel: Model<userPayData>
 ) {}
-  async getCardList(req: RequestWithUser, res: Response): Promise<void> {
+  async auth(req: RequestWithUser, res: Response): Promise<void> {
     await RequestToss('/brandpay/authorizations/access-token', {
       "grantType": "AuthorizationCode",
       "code": req.query.code,
       "customerKey": req.user.id
     }, 'POST')
     .then(async(data: AxiosResponse) => {
-      await this.UserPayModel.updateOne({user_id: req.user.id}, {$set: {access_token: data.data.accessToken, refresh_token: data.data.refreshToken}})
+      await this.UserPayModel.updateOne({user_id: req.user.id}, {$set: {access_token: data.data.accessToken, refresh_token: data.data.refreshToken}}, {upsert: true})
         .catch(err => {
           throw new HttpException('카드 정보를 저장하는데 실패했습니다.', 500);
         })
@@ -33,5 +33,17 @@ export class cardInformationService {
       }
     })
     return ResponseWrapper(res);
+  }
+
+  async getCardList(req: RequestWithUser, res: Response): Promise<void> {
+    const userPayData = await this.UserPayModel.findOne({user_id: req.user.id})
+    await RequestToss(`/connectpay/payments/methods/${req.user.id}`, null, 'GET')
+      .then((data: AxiosResponse) => {
+        return ResponseWrapper(res, data.data)
+      })
+      .catch((e: AxiosError) => {
+        console.log(e)
+        throw new HttpException(e.response.data.message, e.response.status);
+      })
   }
 }
