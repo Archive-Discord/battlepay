@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { RequestWithUser } from '@types';
 import { Response } from 'express';
 import { PayoutService } from './payout.service';
-import { ServerAddDto } from './dto/ServerAdd.dto';
+import { AccountAddDto } from './dto/AccountAdd.dto';
 
 @Controller('/payout')
 export class PayoutServiceController {
@@ -20,7 +20,7 @@ export class PayoutServiceController {
   }
 
   @Post('/:id/setting')
-  async payoutSetting(@Req() req: RequestWithUser, @Res() res: Response): Promise<void> {
-    return await this.PayoutService.SettingPayout(req, res);
+  async payoutSetting(@Req() req: RequestWithUser, @Res() res: Response, @Body() accout: AccountAddDto): Promise<void> {
+    return await this.PayoutService.SettingPayout(req, res, accout);
   }
 }
