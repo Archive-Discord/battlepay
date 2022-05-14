@@ -4,6 +4,7 @@ import { config } from 'config';
 import { cardInformationModule } from './CardInformation/cardInformation.module';
 import { PayoutModule } from './payout/payout.module';
 import { SubmitModule } from './Submit/submit.module';
+import { SubscribeModule } from './subscribe/subscribe.module';
 
 @Module({
   imports: [config.DATABASE.MONGODB_USER ? MongooseModule.forRootAsync({
@@ -18,6 +19,8 @@ import { SubmitModule } from './Submit/submit.module';
   }) : MongooseModule.forRoot(config.DATABASE.MONGODB_URI),
   cardInformationModule,
   SubmitModule,
-  PayoutModule],
+  PayoutModule,
+  SubscribeModule
+  ],
 })
 export class AppModule {}
